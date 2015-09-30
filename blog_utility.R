@@ -5,6 +5,7 @@ library('stringr')
 tourneySeeds<-read.csv("tourney_seeds.csv") 
 tourneyRes<-read.csv("tourney_compact_results.csv") 
 regSeason<-read.csv("regular_season_compact_results.csv")
+#BPI<-read.csv("BPI.csv")
 
 ## Function which calculates team metrics by season
 ### Predictors Included:
@@ -16,6 +17,8 @@ regSeason<-read.csv("regular_season_compact_results.csv")
 team_metrics_by_season <- function(seasonletter) {
     playoff_teams <- sort(tourneySeeds$team[which(tourneySeeds$season == seasonletter)])
     playoff_seeds <- tourneySeeds[which(tourneySeeds$season == seasonletter), ]
+    #BPI_rank<-BPI[which(BPI$season == seasonletter), ]
+
     season <- regSeason[which(regSeason$season == seasonletter), ]
     ##Each of these dataframes is labled "Var1" and "Freq" for TeamID and Statistic respectively
     #Wins (NOT A USABLEVAR, must scale)
@@ -54,16 +57,28 @@ team_metrics_by_season <- function(seasonletter) {
     seeds <- as.numeric(team_seeds$V2)
     playoff_seeds$seed  <- seeds
     seed_col <- vector()
+    
+    #BPI
+    BPI_col<-vector()    
+    
     for(i in playoff_teams) {
         val <- match(i, playoff_seeds$team)
         seed_col <- c(seed_col, playoff_seeds$seed[val])
+        BPI_col <- c(BPI_col, playoff_seeds$BPI[val])
+        #BPI_col<-c(BPI_col, BPI_rank$rank[val])
     }
-    team_seed <- data.frame("Var1" = playoff_teams, "Freq" =seed_col)
-    team_metrics <- data.frame()
-    team_metrics <- cbind(total_winpct_by_team, wins_last_six_games_by_team$Freq,
-    team_seed$Freq)
+    #team_seed <- data.frame("Var1" = playoff_teams, "Freq" =seed_col)
+    team_seed<-data.frame(playoff_teams, seed_col,BPI_col)
+    #team_BPI <- data.frame("Var1" = playoff_teams, "Freq" =BPI_col)
+    #team_metrics <- data.frame()
+    #team_metrics <- cbind(total_winpct_by_team, wins_last_six_games_by_team$Freq,
+    #team_seed$seed_col, team_seed$BPI_col)
+    team_metrics <-data.frame(total_winpct_by_team, wins_last_six_games_by_team$Freq,
+                          team_seed$seed_col, team_seed$BPI_col)
+    #team_seed$Freq, team_BPI$Freq) 
     
-    colnames(team_metrics) <- c("TEAMID", "A_TWPCT", "A_WST6", "A_SEED")
+    
+    colnames(team_metrics) <- c("TEAMID", "A_TWPCT", "A_WST6", "A_SEED", "A_BPI")
     return(team_metrics)
 }
 
@@ -90,7 +105,7 @@ train_frame_model <- function(seasonletter) {
     }
     model_data_frame <- data.frame("Matchup" = team, "Win" = result)
     teamMetrics_away <- teamMetrics
-    colnames(teamMetrics_away) <- c("TEAMID", "B_TWPCT","B_WST6", "B_SEED")
+    colnames(teamMetrics_away) <- c("TEAMID", "B_TWPCT","B_WST6", "B_SEED", "B_BPI")
     #pattern <- "[A-Z]_([0-9]{3})_([0-9]{3})"
     pattern <- "\\d{4}_(\\d{4})_(\\d{4})"
     #pattern <- "[A-Z]([0-9]{3})_[A-Z]([0-9]{3})"
@@ -123,7 +138,7 @@ test_frame_model <- function(season) {
     model_data_frame <- submissionFile(season)
     teamMetrics <- team_metrics_by_season(season)
     teamMetrics_away <- teamMetrics
-    colnames(teamMetrics_away) <- c("TEAMID", "B_TWPCT","B_WST6", "B_SEED")
+    colnames(teamMetrics_away) <- c("TEAMID", "B_TWPCT","B_WST6", "B_SEED", "B_BPI")
     #pattern <- "[A-Z]_([0-9]{3})_([0-9]{3})"
     pattern <- "\\d{4}_(\\d{4})_(\\d{4})"
     teamIDs <- as.data.frame(str_match(model_data_frame$Matchup, pattern))
