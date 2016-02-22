@@ -39,7 +39,9 @@ team_metrics_by_season <- function(seasonletter) {
     #Total Win Percentage
     gamesplayed <- as.vector(wins_by_team$Freq + loss_by_team$Freq)
     total_winpct <- round(wins_by_team$Freq / gamesplayed, digits = 3)
-    total_winpct_by_team <- as.data.frame(cbind(as.vector(loss_by_team$Var1), total_winpct))
+    
+    #total_winpct_by_team <- as.data.frame(cbind(as.vector(loss_by_team$Var1), total_winpct))
+    total_winpct_by_team <- data.frame(loss_by_team$Var1, total_winpct)
     colnames(total_winpct_by_team) <- c("Var1", "Freq")
     #Num of wins in last 6 games
     wins_last_six_games_by_team <- data.frame()

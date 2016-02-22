@@ -431,3 +431,67 @@ logloss_KNN<- (-sum)/nrow(final_logit)
 #.688 if using 2008-2012 as training and 2013 as test and BPI, SEED and A_wST6, 
 #.688 ALSO if just BPI, A_WST6 (no SEED)
 #.656 if ONLY BPI
+
+
+
+
+
+#Neural Networks
+
+#m <- model.matrix( 
+#  ~Win + A_WST6 + A_SEED + A_TWPCT + A_BPI + B_WST6 + B_SEED + B_TWPCT + B_BPI, data = trainData
+#)
+#don't use model.matrix since these are not categorical variables
+ncaanet <- neuralnet(Win ~ A_WST6 + A_SEED + A_TWPCT + A_BPI + B_WST6 + B_SEED + B_TWPCT + B_BPI, data=trainData, hidden = 4, lifesign = "minimal", 
+                      linear.output = FALSE, threshold = 0.1)
+ncaanet.results <- compute(ncaanet, testData[,5:12])
+#columns 5-12 of testData are A_WST6,A_SEED,A_TWPCT,A_BPI and similarly for B
+
+subfile <- data.frame(id = testData$Matchup, pred = ncaanet.results$net.result)
+write.csv(subfile, file = "neuralnet_model.csv", row.names = FALSE)
+
+#to see how well model matched actual tournament results
+tourneyRes<-read.csv("tourney_compact_results.csv") 
+season_matches <- tourneyRes[which(tourneyRes$season == "2013"), ]
+team <- vector()
+result <- vector()
+for(i in c(1:nrow(season_matches))) {
+  row <- season_matches[i, ]
+  if(row$wteam < row$lteam) {
+    vector <- paste("2013","_",row$wteam,"_", row$lteam, sep ="")
+    team <- c(team, vector)
+    result <- c(result, 1)
+  } else {
+    oth <- paste("2013", "_", row$lteam, "_", row$wteam, sep ="")
+    team <- c(team, oth)
+    result <- c(result, 0)
+  }
+}
+actual_data_frame <- data.frame("Matchup" = team, "Win" = result)
+head(actual_data_frame)
+
+#check how accurate model was
+final_logit<-merge(subfile,actual_data_frame,by.x="id",by.y="Matchup")
+#remove NA
+final_logit<-final_logit[complete.cases(final_logit),]
+#get results of accuracy
+sum<-0
+for(i in c(1:nrow(final_logit))) {
+  row <- final_logit[i, ]
+  if(row$Win==1)
+    #sum <- row$pred*row$Win + sum
+    sum <- log(row$pred)*row$Win + sum
+  else
+    sum <- log(1-row$pred) + sum
+  #sum <- 1 - row$pred + sum
+}
+logloss_logit<- (-sum)/nrow(final_logit)
+#.671 for neural net if using 2008-2012 as training and 2013 as test and TWPCT, BPI, SEED and A_wST6, 
+#hidden=4 and threshold=.1
+
+#2.179 if using TWPCT, BPI, SEED, testDataN<-testData[,-c(1:4,6,10)]
+#.6706 if using BPI, SEED
+
+#.688 for logistic regression if using 2008-2012 as training and 2013 as test and BPI, SEED and A_wST6, 
+#.688 ALSO if just BPI, A_WST6 (no SEED)
+#.656 if ONLY BPI
