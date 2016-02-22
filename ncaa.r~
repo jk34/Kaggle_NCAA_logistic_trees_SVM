@@ -395,7 +395,9 @@ logloss_LDA<- (-sum)/nrow(final_logit)
 #.651 if using 2008-2012 as training and 2013 as test and BPI, SEED and A_wST6,mtry=2, ntree=5000
 #.650 if using ntree=1000, .657 for ntree=500, .648 if ntree=10000
 
-#not as good as Logistic Regression logloss of .5935
+#.688 if using 2008-2012 as training and 2013 as test and BPI, SEED and A_wST6, 
+#.688 ALSO if just BPI, A_WST6 (no SEED)
+#.656 if ONLY BPI
 
 
 #plot LDA
