@@ -1,4 +1,4 @@
-# Kaggle_NCAA_logistic_trees_SVM
+# Predicting the winners of the 2017 NCAA basketball tournament and previous tournaments using R and Python
 
 See "ncaa17.ipynb" for the IPython notebook and "ncaa17.py" at https://github.com/jk34/Kaggle_NCAA_logistic_trees_SVM for the Python script I used to generate the predictions for the upcoming 2017 tournament.
 
@@ -37,7 +37,7 @@ The analysis I have performed is in ncaa.r. I have tried to use trees, logistic 
 
 I also included BPI as a predictor, which is a rough estimate for how good teams really are. For 2011-12 seasons and afterwards, I used the BPI rankings from http://espn.go.com/mens-college-basketball/bpi/_/season/2012 because I think these BPI rankings do not consider tournament results into the rankings. That is because that link has “NCAA tournament information” which predicts the seeds and which teams will make tournament or not. For seasons before 2011-12, I used the Pomeroy rankings instead http://kenpom.com/index.php?y=2014, which also tries to determine how good teams really are
 
-### Results
+## Results
 
 I used the log-loss values of each model to determine which one predicts results that more accurately match actual results. 
 
@@ -51,7 +51,7 @@ I then tried random forest. It computed the log-loss value as .651 if using 2008
 
 Finally, I used K-nearest neighbors. The best log-loss value was .6947, for k=320 if using 2008-2012 as the training and 2013 as test set. This is slightly larger than the log-loss values from random forest and logistic regression. So the predictions from random forest and logistic regression are more slightly more accurate than K-nearest neighbors (using 2008-12 as the training set and 2013 as the test set)
 
-### Conclusion
+## Conclusion
 
 The predictions should not taken to seriously. I probably should have used GridSearchCV and 10-fold CV in Python or the caret package in R to find a better value for the parameters in the models I used. 
 
