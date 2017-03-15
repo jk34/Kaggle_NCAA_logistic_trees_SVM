@@ -37,6 +37,10 @@ The analysis I have performed is in ncaa.r. I have tried to use trees, logistic 
 
 I also included BPI as a predictor, which is a rough estimate for how good teams really are. For 2011-12 seasons and afterwards, I used the BPI rankings from http://espn.go.com/mens-college-basketball/bpi/_/season/2012 because I think these BPI rankings do not consider tournament results into the rankings. That is because that link has “NCAA tournament information” which predicts the seeds and which teams will make tournament or not. For seasons before 2011-12, I used the Pomeroy rankings instead http://kenpom.com/index.php?y=2014, which also tries to determine how good teams really are
 
+## Data Exploration
+
+The CSV files provided by Kaggle are assumed to be already cleaned. I could perform further data exploration, but due to time constraints, I chose not to. I could have generated histograms and boxplots to look for noticeable typos and outliers
+
 ## Results
 
 I used the log-loss values of each model to determine which one predicts results that more accurately match actual results. 
