@@ -259,14 +259,69 @@ def main():
     predicted = np.array(model.predict_proba(testData[features]))
     predicted = pd.DataFrame(predicted)
     predicted.columns=['Win','Loss']
-    
-    subfile  = pd.concat([testData.Matchup, predicted.Loss], axis=1)
-    subfile.columns=['id', 'pred']
 
     subfile1  = pd.concat([testData.HomeID, testData.AwayID, predicted.Loss], axis=1)
     subfile1.to_csv("predictions.csv", sep=',')   
 
 
+    #generate bar plots showing win probabilities of a few matchups using Seaborn
+    teamNames= pd.read_csv("teams.csv", sep=',')
+    outNames= pd.merge(subfile1, teamNames,left_on='HomeID',right_on='team_id')
+    outNames= pd.merge(outNames, teamNames,left_on='AwayID',right_on='team_id')
+    outNames.drop(outNames.columns[[0,1,3,5]], axis=1, inplace=True)
+
+    #change "BPI_y" to "BPI"
+    outNames = outNames.rename(columns = {'team_name_x':'TeamA', 'team_name_y':'TeamB', 'Loss':'WinProb'})
+    #cols = outNames.columns.tolist()
+    #cols = cols[-1] + cols[:-1]
+    #outNames = outNames[cols]
+    outNames = outNames[['TeamA', 'TeamB', 'WinProb']]
+    outNames.to_csv("predictions1.csv", sep=',')   
+
+    #generate plots
+    teamlst=[]
+    winlst=[]
+
+    for index, row in outNames.iterrows():
+        if (row[0]=="Butler" and row[1]=="Winthrop") or (row[1]=="Butler" and row[0]=="Winthrop"):
+            teamlst.append(row[0])
+            teamlst.append(row[1])
+            winlst.append(round(100*row[2],1))
+            winlst.append(round(100*(1-row[2]),1))
+        elif (row[0]=="Maryland" and row[1]=="Xavier") or (row[1]=="Maryland" and row[0]=="Xavier"):
+            teamlst.append(row[0])
+            teamlst.append(row[1])
+            winlst.append(round(100*row[2],1))
+            winlst.append(round(100*(1-row[2]),1))
+        elif (row[0]=="Kent" and row[1]=="UCLA") or (row[1]=="Kent" and row[0]=="UCLA"):
+            teamlst.append(row[0])
+            teamlst.append(row[1])
+            winlst.append(round(100*row[2],1))
+            winlst.append(round(100*(1-row[2]),1))
+        elif (row[0]=="Creighton" and row[1]=="Rhode Island") or (row[1]=="Creighton" and row[0]=="Rhode Island"):
+            teamlst.append(row[0])
+            teamlst.append(row[1])
+            winlst.append(round(100*row[2],1))
+            winlst.append(round(100*(1-row[2]),1))
+
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+    from matplotlib.backends.backend_pdf import PdfPages
+    from matplotlib import pyplot as plot
+
+    with PdfPages('winprobs.pdf') as pdf_pages:
+        fig,((ax1,ax2),(ax3,ax4)) = plt.subplots(2,2)
+        list_of_axes = (ax1,ax2,ax3,ax4)
+        for i,j in zip(range(0,len(teamlst), 2),list_of_axes):
+            sns.barplot(teamlst[i:i+2], winlst[i:i+2],ax=j)
+            j.axes.set_title('Which team will win?', fontsize=14,color="b",alpha=0.3)
+            j.set_ylabel("Win Probability (%)",size = 12,color="r",alpha=0.5)
+
+            for p in j.patches:
+                j.annotate(str(p.get_height()), (p.get_x() * 1.005, p.get_height() * 1.005))
+    	pdf_pages.savefig()
+    	plt.close()
+    
+
 if __name__ == '__main__':
     main()
-
