@@ -43,7 +43,7 @@ The CSV files provided by Kaggle are assumed to be already cleaned. I could perf
 
 ## Results
 
-For logistic regression and using features true winning percentage, seed, and BPI, I got a log-loss score of .6475
+I used true winning percentage, seed, and BPI as features, and logistic regression as the model. With this, I got a log-loss score of .6475
 
 ## Conclusion
 
