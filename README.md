@@ -4,15 +4,15 @@ See "ncaa17.ipynb" for the IPython notebook and "ncaa17.py" at https://github.co
 
 ## Summary
 
--I used Seed, BPI and the regular season winning percentages of each team to predict the winner of each potential matchup. In the code, I used the following variables as predictors: SEED,WST_6, TWPCT (details at https://statsguys.wordpress.com/2014/03/15/data-analytics-for-beginners-march-machine-learning-mania-part-ii/).
+I used Seed, BPI and the regular season winning percentages of each team to predict the winner of each potential matchup. In the code, I used the following variables as predictors: SEED,WST_6, TWPCT (details at https://statsguys.wordpress.com/2014/03/15/data-analytics-for-beginners-march-machine-learning-mania-part-ii/).
 
--According to http://www.espn.com/mens-college-basketball/bpi, BPI is:
+According to http://www.espn.com/mens-college-basketball/bpi, BPI is:
 
 The College Basketball Power Index (BPI) is a measure of team strength that is meant to be the best predictor of performance going forward. BPI represents how many points above or below average a team is."
 
--Full description of BPI is explained here: http://www.espn.com/mens-college-basketball/story/_/id/7561413/bpi-college-basketball-power-index-explained
+Full description of BPI is explained here: http://www.espn.com/mens-college-basketball/story/_/id/7561413/bpi-college-basketball-power-index-explained
 
--For the 2017 tournament, the generated predictions are in "predictions.csv". Some of the predictions make intuitive sense as they match historical results. For example, the code below predicts 2-seeded Duke to beat 15-seeded Troy with a 96% probability and 2-seeded Kentucky with a 98.8% probability to beat 15-seeded N Kentucky. This makes sense because ever since 1985 the 2-seeded teams have beaten the 15-seeded teams 93.75% out of all matchups
+For the 2017 tournament, the generated predictions are in "predictions.csv". Some of the predictions make intuitive sense as they match historical results. For example, the code below predicts 2-seeded Duke to beat 15-seeded Troy with a 96% probability and 2-seeded Kentucky with a 98.8% probability to beat 15-seeded N Kentucky. This makes sense because ever since 1985 the 2-seeded teams have beaten the 15-seeded teams 93.75% out of all matchups
 
 
 ## Background
